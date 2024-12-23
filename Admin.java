@@ -5,7 +5,7 @@ public class Admin extends User {
     private List<Customer> customers = new ArrayList<>();
     private List<Vendor> vendors = new ArrayList<>();
 
-    public Administrator(String name, String userID, String password) {
+    public void Administrator(String name, String userID, String password) {
         super(name, userID, password);
     }
 
@@ -29,6 +29,7 @@ public class Admin extends User {
         System.out.println("Administrator logged in.");
     }
 
+    
     
 }
 

@@ -11,4 +11,9 @@ public abstract class User {
     }
 
     public abstract void login();
+
+    public String getName() {
+        return name;
+    }
+
 }

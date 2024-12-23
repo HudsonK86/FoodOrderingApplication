@@ -5,7 +5,7 @@ public class Delivery extends User {
     private double earnings;
     private List<Task> taskHistory = new ArrayList<>();
 
-    public DeliveryRunner(String name, String userID, String password) {
+    public void DeliveryRunner(String name, String userID, String password) {
         super(name, userID, password);
         this.earnings = 0.0;
     }
