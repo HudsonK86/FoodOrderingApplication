@@ -30,3 +30,44 @@ public class Customer extends User {
         System.out.println("Customer logged in.");
     }
 }
+
+// just putting another Customer class by commenting
+
+/*
+import java.util.List;
+import java.util.ArrayList;
+
+public class Customer extends User {
+    private CreditWallet wallet; // Aggregation with CreditWallet
+    private List<Order> orderHistory; // Aggregation with Order
+
+    public Customer(String username, String password, String name, String email) {
+        super(username, password, name, email, "Customer");
+        this.wallet = new CreditWallet();
+        this.orderHistory = new ArrayList<>();
+    }
+
+    public void placeOrder(Order order) {
+        // Place order logic
+    }
+
+    public void cancelOrder(Order order) {
+        // Cancel order logic
+    }
+
+    public void provideReview(Order order, Review review) {
+        // Provide a review for the order
+    }
+
+    public void reloadCredit(double amount, Administrator admin) {
+        // Reload credit via admin
+    }
+
+    public List<Order> getOrderHistory() {
+        return orderHistory;
+    }
+
+    // Other methods as required
+}
+
+ */

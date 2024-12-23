@@ -28,8 +28,39 @@ public class Admin extends User {
     public void login() {
         System.out.println("Administrator logged in.");
     }
-
-    
     
 }
 
+
+// just putting another Admin class by commenting
+
+/*
+public class Administrator extends User {
+    public Administrator(String username, String password, String name, String email) {
+        super(username, password, name, email, "Administrator");
+    }
+
+    public void registerVendor(Vendor vendor) {
+        // Register vendor logic
+    }
+
+    public void registerCustomer(Customer customer) {
+        // Register customer logic
+    }
+
+    public void topUpCredit(Customer customer, double amount) {
+        // Top-up credit logic
+    }
+
+    public void generateReceipt(Transaction transaction) {
+        // Generate receipt logic
+    }
+
+    public void sendReceipt(Receipt receipt) {
+        // Send receipt to customer via notification
+    }
+
+    // Other methods as required
+}
+
+ */
