@@ -1,72 +1,73 @@
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.List; 
 
 public class Menu {
     private List<MenuItem> menuItems;
-    private static final String MENU_FILE = "menu.txt";
 
-    // Constructor
     public Menu() {
-        menuItems = new ArrayList<>();
-        loadMenu(); // Load menu from file if it exists
+        this.menuItems = new ArrayList<>();
     }
 
-    // Load menu from file
-    public void loadMenu() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(MENU_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(", ");
-                if (parts.length == 3) {
-                    String category = parts[0];
-                    String name = parts[1];
-                    double price = Double.parseDouble(parts[2]);
-                    menuItems.add(new MenuItem(name, price, category));
+    public List<MenuItem> getMenuItems() {
+        return menuItems;
+    }
+
+    public void addMenuItem(String vendorID) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nAdd Item to Menu");
+        
+        String name;
+        while (true) {
+            System.out.print("Enter item name: ");
+            name = scanner.nextLine();
+            if (name.isEmpty()) {
+                System.out.println("Item name cannot be empty.");
+            } else {
+                break;
+            }
+            
+        }
+        
+        double price;
+        while (true) {
+            System.out.print("Enter item price: ");
+            try {
+                price = Double.parseDouble(scanner.nextLine());
+                if (price <= 0) {
+                    System.out.println("Price must be a positive value.");
+                } else {
+                    break;
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid price format.");
             }
-        } catch (IOException e) {
-            System.out.println("Error loading menu: " + e.getMessage());
         }
-    }
+        
+        System.out.println("Select item category:");
+        System.out.println("1. Food");
+        System.out.println("2. Drink");
+        System.out.print("Enter your choice (1 or 2): ");
+        int categoryChoice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
 
-    // Save menu to file
-    public void saveMenu() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(MENU_FILE))) {
-            for (MenuItem item : menuItems) {
-                writer.write(item.toString() + "\n");
-            }
-        } catch (IOException e) {
-            System.out.println("Error saving menu: " + e.getMessage());
+        String category;
+        if (categoryChoice == 1) {
+            category = "Food";
+        } else if (categoryChoice == 2) {
+            category = "Drink";
+        } else {
+            System.out.println("Invalid choice. Please select 1 for Food or 2 for Drink.");
+            return;
         }
-    }
 
-    // Add menu item
-    public void addMenuItem(MenuItem item) {
-        menuItems.add(item);
-        saveMenu();
-    }
+        MenuItem newItem = new MenuItem(FileHandler.generateUniqueItemID(), name, price, category);
+        menuItems.add(newItem);
 
-    // Update menu item
-    public void updateMenuItem(int index, MenuItem newItem) {
-        if (index >= 0 && index < menuItems.size()) {
-            menuItems.set(index, newItem);
-            saveMenu();
-        }
-    }
+        // Save the new menu item to the file
+        FileHandler.addMenuItemToFile(vendorID, newItem);
 
-    // Delete menu item
-    public void deleteMenuItem(int index) {
-        if (index >= 0 && index < menuItems.size()) {
-            menuItems.remove(index);
-            saveMenu();
-        }
-    }
-
-    // Display menu
-    public void displayMenu() {
-        System.out.println("Menu:");
-        for (MenuItem item : menuItems) {
-            System.out.println(item);
-        }
+        System.out.println("Item ID:"+newItem.getItemID()+" added successfully.");
     }
 }

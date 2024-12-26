@@ -4,6 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 
 public class FileHandler {
@@ -16,8 +19,8 @@ public class FileHandler {
     private static final String RECEIPT_FILE = "receipt.txt";
     
     // Validate user credentials by checking against the file
-    public static User validateUser(String userFilePath, String userID, String password) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(userFilePath))) {
+    public static User validateUser(String userID, String password) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] userDetails = line.split(",\\s*");
@@ -61,8 +64,8 @@ public class FileHandler {
     }
 
     // Log user activity (login/logout) to a file
-    public static void logActivity(String userID, String action, String logFilePath) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFilePath, true))) {
+    public static void logActivity(String userID, String action) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("log.txt", true))) {
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             writer.write("[" + timestamp + "]," + userID + "," + action);
             writer.newLine();
@@ -72,10 +75,10 @@ public class FileHandler {
     }
 
     // Method to get all logs for a specific user
-    public static List<String> getUserLogActivities(String logFilePath, String userID) {
+    public static List<String> getUserLogActivities(String userID) {
         List<String> userLogs = new ArrayList<>();
     
-        try (BufferedReader reader = new BufferedReader(new FileReader(logFilePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(LOG_FILE))) {
             String line;
     
             while ((line = reader.readLine()) != null) {
@@ -92,8 +95,8 @@ public class FileHandler {
     }
     
     // Method to write a new user to the file
-    public static void writeUserToFile(String userFilePath, String userID) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFilePath, true))) {
+    public static void writeUserToFile(String userID) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_FILE, true))) {
             writer.write(userID);
             writer.newLine();
         } catch (IOException e) {
@@ -102,8 +105,8 @@ public class FileHandler {
     }
 
     // Method to check if a User ID already exists in the file
-    public static boolean isUserIDExist(String userFilePath, String userID) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(userFilePath))) {
+    public static boolean isUserIDExist(String userID) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] userDetails = line.split(",\\s*");
@@ -118,9 +121,9 @@ public class FileHandler {
     }
 
     // Method to update a user in the file
-    public static boolean updateUserInFile(String userFilePath, String userIDToUpdate, String newPassword) {
+    public static boolean updateUserInFile(String userIDToUpdate, String newPassword) {
         try {
-            File inputFile = new File(userFilePath);
+            File inputFile = new File(USER_FILE);
             File tempFile = new File("temp.txt");
     
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
@@ -161,9 +164,9 @@ public class FileHandler {
     }
     
     // Method to top up a customer's wallet
-    public static boolean topUpWallet(String userFilePath, String customerID, double topUpAmount) {
+    public static boolean topUpWallet(String customerID, double topUpAmount) {
         try {
-            File inputFile = new File(userFilePath);
+            File inputFile = new File(USER_FILE);
             File tempFile = new File("temp.txt");
     
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
@@ -207,8 +210,8 @@ public class FileHandler {
     }
 
     // Method to check if a given User ID is a Customer
-    public static boolean isCustomer(String userFilePath, String customerID) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(userFilePath))) {
+    public static boolean isCustomer(String customerID) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] userDetails = line.split(",\\s*");
@@ -223,8 +226,8 @@ public class FileHandler {
     }
     
     // Method to get the details of a user from the file
-    public static String getUserDetails(String userFilePath, String userID) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(userFilePath))) {
+    public static String getUserDetails(String userID) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] userData = line.split(",");
@@ -238,5 +241,41 @@ public class FileHandler {
         return null; // Return null if the user is not found
     }
     
+    // Method to generate a unique Item ID
+    public static int generateUniqueItemID() {
+        Set<Integer> existingItemIDs = new HashSet<>();
+        
+        // Read existing ItemIDs from the file
+        try (BufferedReader reader = new BufferedReader(new FileReader(MENU_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] menuDetails = line.split(",\\s*");
+                if (menuDetails.length > 1) {
+                    existingItemIDs.add(Integer.parseInt(menuDetails[1]));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading menu file: " + e.getMessage());
+        }
+
+        Random random = new Random();
+        int newItemID;
+        do {
+            newItemID = 100 + random.nextInt(900); // Generate a number between 100 and 999
+        } while (existingItemIDs.contains(newItemID));
+
+        return newItemID;
+    }
+
+    // Method to add a menu item to the file
+    public static void addMenuItemToFile(String vendorUserID, MenuItem menuItem) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(MENU_FILE, true))) {
+            // Write the vendorUserID and MenuItem details to the file
+            writer.write(vendorUserID + "," + menuItem.toString());
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error while adding menu item to file: " + e.getMessage());
+        }
+    }
 }
 

@@ -56,7 +56,7 @@ public abstract class User {
     }
 
     // Login method
-    public static User login(String userFilePath) {
+    public static User login() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter User ID: ");
         String userID = scanner.nextLine();
@@ -64,10 +64,10 @@ public abstract class User {
         String password = scanner.nextLine();
 
         // Validate credentials
-        User user = FileHandler.validateUser(userFilePath, userID, password);
+        User user = FileHandler.validateUser(userID, password);
         if (user != null) {
             loggedInUser = user; // Set the logged-in user
-            FileHandler.logActivity(userID, "logged-in", "activity_log.txt"); // Log login activity
+            FileHandler.logActivity(userID, "logged-in"); // Log login activity
             System.out.println("Login successful! Welcome, " + user.getName() + ".");
             return user; // Return the logged-in user
         } else {
@@ -79,7 +79,7 @@ public abstract class User {
     // Logout method
     public static void logout() {
         System.out.println("User " + loggedInUser.getName() + " has been logged out.");
-        FileHandler.logActivity(loggedInUser.getUserID(), "logged-out", "activity_log.txt"); // Log logout activity
+        FileHandler.logActivity(loggedInUser.getUserID(), "logged-out"); // Log logout activity
         loggedInUser = null;
     }
 

@@ -1,9 +1,9 @@
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String userFilePath = "user.txt"; // Path to your user data file
         User loggedInUser = null; // Track the logged-in user
 
         while (true) {
@@ -17,12 +17,15 @@ public class Main {
             switch (choice) {
                 case 1:
                     // Log in process
-                     loggedInUser = User.login(userFilePath);
+                     loggedInUser = User.login();
                     if (loggedInUser != null) {
                         // If the user is an administrator, show the admin menu
                         if (loggedInUser instanceof Administrator) {
                             Administrator admin = (Administrator) loggedInUser;
-                            admin.adminMenu(userFilePath);
+                            admin.adminMenu();
+                        } else if (loggedInUser instanceof Vendor) {
+                            Vendor vendor = (Vendor) loggedInUser;
+                            vendor.vendorMenu();
                         } else {
                             System.out.println("Welcome, " + loggedInUser.getName());
                             // Show user-specific menu here (if any)

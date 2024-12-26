@@ -12,7 +12,7 @@ public class Administrator extends User {
     }
 
     // Administrator Menu
-    public void adminMenu(String userFilePath) {
+    public void adminMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("\nAdministrator Menu:");
@@ -28,19 +28,19 @@ public class Administrator extends User {
 
             switch (choice) {
                 case 1:
-                    register(userFilePath);
+                    register();
                     break;
                 case 2:
-                    changePassword(userFilePath);
+                    changePassword();
                     break;
                 case 3:
-                    topUpWallet(userFilePath);
+                    topUpWallet();
                     break;
                 case 4:
-                    viewUserDetails(userFilePath); // View user details option
+                    viewUserDetails(); // View user details option
                     break;
                 case 5:
-                viewLogActivities(userFilePath, "activity_log.txt"); // View user logs option
+                    viewLogActivities(); // View user logs option
                     break;
                 case 6:
                     User.logout();
@@ -52,8 +52,9 @@ public class Administrator extends User {
     }
 
     // Register a new account
-    public void register(String userFilePath) {
+    public void register() {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("\nRegister User");
 
         // Name validation
         String name;
@@ -72,7 +73,7 @@ public class Administrator extends User {
         while (true) {
             System.out.print("Enter User ID: ");
             userID = scanner.nextLine();
-            if (userID.isEmpty() || userID.contains(" ") || FileHandler.isUserIDExist(userFilePath, userID)) {
+            if (userID.isEmpty() || userID.contains(" ") || FileHandler.isUserIDExist(userID)) {
                 System.out.println("Invalid User ID. It can't be empty, can't contain spaces, and must be unique.");
             } else {
                 break;
@@ -135,12 +136,12 @@ public class Administrator extends User {
         }
 
         // Write user information to file
-        FileHandler.writeUserToFile(userFilePath, userData);
+        FileHandler.writeUserToFile(userData);
         System.out.println("User registered successfully!");
     }
 
     // Update an existing account
-    public void changePassword(String userFilePath) {
+    public void changePassword() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter User ID to Change Password: ");
         String userIDToUpdate = scanner.nextLine();
@@ -150,7 +151,7 @@ public class Administrator extends User {
             return;
         }
     
-        if (!FileHandler.isUserIDExist(userFilePath, userIDToUpdate)) {
+        if (!FileHandler.isUserIDExist(userIDToUpdate)) {
             System.out.println("User ID not found!");
             return;
         }
@@ -166,19 +167,19 @@ public class Administrator extends User {
             }
         }
     
-        FileHandler.updateUserInFile(userFilePath, userIDToUpdate, password);
+        FileHandler.updateUserInFile(userIDToUpdate, password);
         System.out.println("Password updated successfully!");
     }
     
     // Top up wallet for a customer
-    public void topUpWallet(String userFilePath) {
+    public void topUpWallet() {
         Scanner scanner = new Scanner(System.in);
     
         System.out.print("Enter Customer User ID to Top Up: ");
         String customerID = scanner.nextLine();
     
         // Validate if it's a valid Customer ID
-        if (!FileHandler.isCustomer(userFilePath, customerID)) {
+        if (!FileHandler.isCustomer(customerID)) {
             System.out.println("Invalid User ID or not a Customer!");
             return;
         }
@@ -194,7 +195,7 @@ public class Administrator extends User {
             }
         }
     
-        boolean result = FileHandler.topUpWallet(userFilePath, customerID, topUpAmount);
+        boolean result = FileHandler.topUpWallet(customerID, topUpAmount);
         if (result) {
             System.out.println("Wallet topped up successfully!");
         } else {
@@ -203,7 +204,7 @@ public class Administrator extends User {
     }
     
     // View user details
-    public void viewUserDetails(String userFilePath) {
+    public void viewUserDetails() {
         Scanner scanner = new Scanner(System.in);
     
         // Prompt the administrator to enter a User ID to view details
@@ -211,13 +212,13 @@ public class Administrator extends User {
         String userIDToView = scanner.nextLine();
     
         // Check if the user exists
-        if (!FileHandler.isUserIDExist(userFilePath, userIDToView)) {
+        if (!FileHandler.isUserIDExist(userIDToView)) {
             System.out.println("User ID not found!");
             return;
         }
     
         // Fetch user details from the file
-        String userDetails = FileHandler.getUserDetails(userFilePath, userIDToView);
+        String userDetails = FileHandler.getUserDetails(userIDToView);
     
         // If user details are found, display them
         if (userDetails != null) {
@@ -249,19 +250,19 @@ public class Administrator extends User {
     }
     
     // Method to display logs for a specific user
-    public void viewLogActivities(String userFilePath, String logFilePath) {
+    public void viewLogActivities() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter User ID to view activities: ");
         String userID = scanner.nextLine();
     
         // Check if the user ID exists in the user file
-        if (!FileHandler.isUserIDExist(userFilePath, userID)) {
+        if (!FileHandler.isUserIDExist(userID)) {
             System.out.println("User ID not found!");
             return; // Exit if the user doesn't exist
         }
     
         // Fetch logs using FileHandler method
-        List<String> userLogs = FileHandler.getUserLogActivities(logFilePath, userID);
+        List<String> userLogs = FileHandler.getUserLogActivities(userID);
     
         if (userLogs.isEmpty()) {
             System.out.println("No activities found for User ID: " + userID);
