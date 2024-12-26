@@ -1,0 +1,8 @@
+Hudson,Hudson,8888,Customer,180168.0
+Administrator,Administrator,123,Administrator
+Nour,Nour,1111,Customer,20.0
+Van Khoa,HudsonK86,1111,Customer,66000.0
+HolyShit,HolyShit,1111,Manager
+Stella,Stella,2222,Vendor,0.00
+Sadia,Sadia,6666,Delivery,0.00
+Khoa,Khoa,8686,Customer,8.6E8

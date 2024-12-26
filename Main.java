@@ -1,20 +1,43 @@
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        Admin admin = new Admin("Admin", "admin01", "password");
-        Customer customer = new Customer("John Doe", "cust01", "pass123");
-        Vendor vendor = new Vendor("Pizza Place", "vend01", "vendorpass");
-        Delivery runner = new Delivery("Mike", "run01", "runnerpass");
+        Scanner scanner = new Scanner(System.in);
+        String userFilePath = "user.txt"; // Path to your user data file
+        User loggedInUser = null; // Track the logged-in user
 
-        admin.login();
-        admin.registerCustomer(customer);
-        admin.registerVendor(vendor);
+        while (true) {
+            System.out.println("Welcome to the Food Ordering System");
+            System.out.println("1. Login");
+            System.out.println("2. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
 
-        vendor.addMenu(new Menu("001", "Pepperoni Pizza", 15.0));
+            switch (choice) {
+                case 1:
+                    // Log in process
+                     loggedInUser = User.login(userFilePath);
+                    if (loggedInUser != null) {
+                        // If the user is an administrator, show the admin menu
+                        if (loggedInUser instanceof Administrator) {
+                            Administrator admin = (Administrator) loggedInUser;
+                            admin.adminMenu(userFilePath);
+                        } else {
+                            System.out.println("Welcome, " + loggedInUser.getName());
+                            // Show user-specific menu here (if any)
+                        }
+                    }
+                    break;
 
-        customer.login();
-        customer.getWallet().topUp(50.0);
-        customer.placeOrder(new Menu("001", "Pepperoni Pizza", 15.0), "Delivery", 5.0);
+                case 2:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
 
-        runner.login();
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
     }
 }
