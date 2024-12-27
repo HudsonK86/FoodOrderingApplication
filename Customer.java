@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Customer extends User {
     private double walletBalance;
 
@@ -15,6 +17,4 @@ public class Customer extends User {
     public void setWalletBalance(double walletBalance) {
         this.walletBalance = walletBalance;
     }
-
-    
 }

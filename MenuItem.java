@@ -1,11 +1,13 @@
 public class MenuItem {
+    private String vendorID;
     private int itemID;
     private String name;
     private double price;
     private String category; // Either "Food" or "Drink"
 
     // Constructor
-    public MenuItem(int itemID, String name, double price, String category) {
+    public MenuItem(String vendorID, int itemID, String name, double price, String category) {
+        this.vendorID = vendorID;
         this.itemID = itemID;
         this.name = name;
         this.price = price;
@@ -13,6 +15,10 @@ public class MenuItem {
     }
 
     // Getters and Setters
+    public String getVendorID() {
+        return vendorID;
+    }
+    
     public int getItemID() {
         return itemID;
     }
@@ -47,6 +53,6 @@ public class MenuItem {
 
     @Override
     public String toString() {
-        return itemID + "," + category + "," + name + "," + price;
+        return vendorID + "," + itemID + "," + category + "," + name + "," + price;
     }
 }

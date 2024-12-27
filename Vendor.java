@@ -37,19 +37,19 @@ public class Vendor extends User {
 
             switch (choice) {
                 case 1:
-                    
+                    viewMenu();
                     break;
                 case 2:
                     addItemToMenu();
                     break;
                 case 3:
-                    
+                    updateItemInMenu();
                     break;
                 case 4:
-                    
+                    deleteItemFromMenu();
                     break;
                 case 5:
-                    User.logout();
+                    logout();
                     return;
                 default:
                     System.out.println("Invalid option. Try again.");
@@ -57,8 +57,19 @@ public class Vendor extends User {
         }
     }
 
+    public void viewMenu() {
+        menu.viewMenu(this.getUserID());
+    }
+
     public void addItemToMenu() {
         menu.addMenuItem(this.getUserID());
     }
 
+    public void updateItemInMenu() {
+        menu.updateMenuItem(this.getUserID());
+    }
+
+    public void deleteItemFromMenu() {
+        menu.deleteMenuItem(this.getUserID());
+    }
 }

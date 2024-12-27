@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class FileHandler {
@@ -241,41 +242,112 @@ public class FileHandler {
         return null; // Return null if the user is not found
     }
     
-    // Method to generate a unique Item ID
-    public static int generateUniqueItemID() {
-        Set<Integer> existingItemIDs = new HashSet<>();
-        
-        // Read existing ItemIDs from the file
+    // Method to load all menu items from the file
+    public static List<MenuItem> loadMenuData() {
+        List<MenuItem> menuItems = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(MENU_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] menuDetails = line.split(",\\s*");
-                if (menuDetails.length > 1) {
-                    existingItemIDs.add(Integer.parseInt(menuDetails[1]));
+                String[] parts = line.split(",");
+                if (parts.length == 5) {
+                    String vendorID = parts[0];
+                    int itemID = Integer.parseInt(parts[1]);
+                    String category = parts[2];
+                    String name = parts[3];
+                    double price = Double.parseDouble(parts[4]);
+                    menuItems.add(new MenuItem(vendorID, itemID, name, price, category));
                 }
             }
         } catch (IOException e) {
             System.err.println("Error reading menu file: " + e.getMessage());
         }
+        return menuItems;
+    }
 
+    // Method to save all menu items to the file
+    public static void saveMenuData(List<MenuItem> menuItems) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(MENU_FILE))) {
+            for (MenuItem item : menuItems) {
+                writer.write(item.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to menu file: " + e.getMessage());
+        }
+    }
+   
+    // Method to read menu items by vendor from the file
+    public static List<MenuItem> readMenuItemsByVendor(String vendorID) {
+        List<MenuItem> allMenuItems = loadMenuData();
+            return allMenuItems.stream()
+                                .filter(item -> item.getVendorID().equals(vendorID))
+                                .collect(Collectors.toList());
+    }
+        
+    // Retrieves a specific menu item by ItemID for a vendor.
+    public static MenuItem getMenuItemByID(String vendorID, int itemID) {
+        List<MenuItem> vendorMenuItems = readMenuItemsByVendor(vendorID);
+        for (MenuItem item : vendorMenuItems) {
+            if (item.getItemID() == itemID) {
+                return item;
+            }
+        }
+        return null; // Item not found
+    }
+
+    // Updates an existing menu item in the data source.
+    public static void updateMenuItemInFile(String vendorID, MenuItem updatedItem) {
+        List<MenuItem> menuItems = loadMenuData();
+
+        // Find and update the matching menu item
+        for (int i = 0; i < menuItems.size(); i++) {
+            MenuItem item = menuItems.get(i);
+            if (item.getItemID() == updatedItem.getItemID() && item.getVendorID().equals(vendorID)) {
+                menuItems.set(i, updatedItem);
+                break;
+            }
+        }
+
+        // Save updated list to file
+        saveMenuData(menuItems);
+    }
+
+    // Deletes a specific menu item from the data source.
+    public static void deleteMenuItemFromFile(String vendorID, int itemID) {
+        List<MenuItem> menuItems = loadMenuData();
+
+        // Remove the matching item
+        boolean removed = menuItems.removeIf(item -> item.getItemID() == itemID && item.getVendorID().equals(vendorID));
+
+        if (removed) {
+            // Save updated list to file
+            saveMenuData(menuItems);
+            System.out.println("Item ID: " + itemID + " deleted successfully.");
+        } else {
+            System.out.println("Item not found for deletion.");
+        }
+    }
+
+    // Method to generate a unique Item ID
+    public static int generateUniqueItemID() {
+        Set<Integer> existingItemIDs = new HashSet<>();
+        
+        // Load all menu items using the loadMenuData method
+        List<MenuItem> menuItems = loadMenuData();
+
+        // Add all existing ItemIDs from the loaded menu items to the set
+        for (MenuItem item : menuItems) {
+            existingItemIDs.add(item.getItemID());
+        }
+
+        // Generate a unique ID between 100 and 999
         Random random = new Random();
         int newItemID;
         do {
             newItemID = 100 + random.nextInt(900); // Generate a number between 100 and 999
-        } while (existingItemIDs.contains(newItemID));
+        } while (existingItemIDs.contains(newItemID)); // Ensure the ID does not already exist
 
         return newItemID;
-    }
-
-    // Method to add a menu item to the file
-    public static void addMenuItemToFile(String vendorUserID, MenuItem menuItem) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(MENU_FILE, true))) {
-            // Write the vendorUserID and MenuItem details to the file
-            writer.write(vendorUserID + "," + menuItem.toString());
-            writer.newLine();
-        } catch (IOException e) {
-            System.err.println("Error while adding menu item to file: " + e.getMessage());
-        }
     }
 }
 

@@ -1,3 +1,6 @@
 Stella,837,Food,Burger,12.2
 Stella,255,Drink,Pepsi,12.2
 Stella,354,Food,Chicken,12.2
+Stella,991,Food,Burger,12.12
+Stella,918,Food,Burger,12.2
+Stella,296,Drink,CocaCola,4.5

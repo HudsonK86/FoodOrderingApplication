@@ -43,7 +43,7 @@ public class Administrator extends User {
                     viewLogActivities(); // View user logs option
                     break;
                 case 6:
-                    User.logout();
+                    logout();
                     return;
                 default:
                     System.out.println("Invalid option. Try again.");
