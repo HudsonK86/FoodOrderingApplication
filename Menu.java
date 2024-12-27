@@ -13,6 +13,7 @@ public class Menu {
         return menuItems;
     }
 
+    // View menu
     public void viewMenu(String vendorID) {
         System.out.println("\n--- Vendor Menu ---");
         List<MenuItem> vendorMenuItems = FileHandler.readMenuItemsByVendor(vendorID);
@@ -28,7 +29,7 @@ public class Menu {
         }
     }
     
-
+    // Add a new menu item
     public void addMenuItem(String vendorID) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nAdd Item to Menu");
@@ -92,8 +93,7 @@ public class Menu {
         System.out.println("Item ID: " + newItem.getItemID() + " added successfully.");
     }
             
-
-
+    // Update an existing menu item
     public void updateMenuItem(String vendorID) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n--- Update Menu Item ---");
@@ -170,7 +170,7 @@ public class Menu {
         }
         
         // Remove the item from the file
-        FileHandler.deleteMenuItemFromFile(vendorID, itemID);
+        FileHandler.deleteMenuItemFromFile(vendorID, itemToDelete);
         System.out.println("Item deleted successfully.");
     }
 }

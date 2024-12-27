@@ -276,25 +276,6 @@ public class FileHandler {
         }
     }
    
-    // Method to read menu items by vendor from the file
-    public static List<MenuItem> readMenuItemsByVendor(String vendorID) {
-        List<MenuItem> allMenuItems = loadMenuData();
-            return allMenuItems.stream()
-                                .filter(item -> item.getVendorID().equals(vendorID))
-                                .collect(Collectors.toList());
-    }
-        
-    // Retrieves a specific menu item by ItemID for a vendor.
-    public static MenuItem getMenuItemByID(String vendorID, int itemID) {
-        List<MenuItem> vendorMenuItems = readMenuItemsByVendor(vendorID);
-        for (MenuItem item : vendorMenuItems) {
-            if (item.getItemID() == itemID) {
-                return item;
-            }
-        }
-        return null; // Item not found
-    }
-
     // Updates an existing menu item in the data source.
     public static void updateMenuItemInFile(String vendorID, MenuItem updatedItem) {
         List<MenuItem> menuItems = loadMenuData();
@@ -312,22 +293,52 @@ public class FileHandler {
         saveMenuData(menuItems);
     }
 
-    // Deletes a specific menu item from the data source.
-    public static void deleteMenuItemFromFile(String vendorID, int itemID) {
+    // Method to read menu items by vendor from the file
+    public static List<MenuItem> readMenuItemsByVendor(String vendorID) {
+        List<MenuItem> allMenuItems = loadMenuData();
+            return allMenuItems.stream()
+                                .filter(item -> item.getVendorID().equals(vendorID))
+                                .collect(Collectors.toList());
+    }
+        
+    // Retrieves a specific menu item by ItemID for a vendor.
+    public static MenuItem getMenuItemByID(String vendorID, int itemID) {
         List<MenuItem> menuItems = loadMenuData();
+        for (MenuItem item : menuItems) {
+            System.out.println("Checking item: " + item);
+            if (item.getItemID() == itemID && item.getVendorID().equals(vendorID)) {
+                System.out.println("Found item to delete: " + item);
+                return item;
+            }
+        }
+        return null;
+    }
 
+    // Deletes a specific menu item from the data source.
+    public static void deleteMenuItemFromFile(String vendorID, MenuItem itemToDelete) {
+        List<MenuItem> menuItems = loadMenuData();
+        
+        // Debugging: Show all items before deletion attempt
+        System.out.println("Attempting to delete item: " + itemToDelete);
+        
         // Remove the matching item
-        boolean removed = menuItems.removeIf(item -> item.getItemID() == itemID && item.getVendorID().equals(vendorID));
-
+        boolean removed = menuItems.removeIf(item -> {
+            boolean matches = item.getItemID() == itemToDelete.getItemID() && item.getVendorID().equals(vendorID);
+            if (matches) {
+                System.out.println("Matching item found: " + item); // Debugging
+            }
+            return matches;
+        });
+    
         if (removed) {
             // Save updated list to file
             saveMenuData(menuItems);
-            System.out.println("Item ID: " + itemID + " deleted successfully.");
+            System.out.println("Item ID: " + itemToDelete.getItemID() + " deleted successfully.");
         } else {
             System.out.println("Item not found for deletion.");
         }
     }
-
+    
     // Method to generate a unique Item ID
     public static int generateUniqueItemID() {
         Set<Integer> existingItemIDs = new HashSet<>();
